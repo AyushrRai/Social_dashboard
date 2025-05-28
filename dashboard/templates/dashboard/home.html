@@ -1,0 +1,298 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Welcome to SocialDash{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Main Theme Colors */
+    :root {
+        --primary: #4361ee;
+        --secondary: #3f37c9;
+        --accent: #4cc9f0;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4ad66d;
+        --warning: #f8961e;
+        --danger: #ef233c;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 6rem 2rem;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(67, 97, 238, 0.3);
+    }
+
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(76,201,240,0.2) 0%, rgba(76,201,240,0) 70%);
+    }
+
+    .hero-section::after {
+        content: "";
+        position: absolute;
+        bottom: -150px;
+        left: -100px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(248,249,250,0.1) 0%, rgba(248,249,250,0) 70%);
+    }
+
+    /* Typography */
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        opacity: 0.9;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Buttons */
+    .btn-hero {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .btn-hero-primary {
+        background: white;
+        color: var(--primary);
+    }
+
+    .btn-hero-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        color: var(--primary);
+    }
+
+    .btn-hero-outline {
+        border: 2px solid white;
+        color: white;
+        background: transparent;
+    }
+
+    .btn-hero-outline:hover {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        height: 100%;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        position: relative;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+    }
+
+    .feature-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 2.5rem;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1;
+    }
+
+    .feature-icon::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: inherit;
+        filter: blur(10px);
+        opacity: 0.4;
+        z-index: -1;
+    }
+
+    .feature-card-1 .feature-icon {
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    }
+
+    .feature-card-2 .feature-icon {
+        background: linear-gradient(135deg, #4cc9f0, #4895ef);
+    }
+
+    .feature-card-3 .feature-icon {
+        background: linear-gradient(135deg, #f72585, #b5179e);
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark);
+    }
+
+    .feature-description {
+        color: #6c757d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.8rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 4rem 1.5rem;
+            border-radius: 10px;
+        }
+        
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .btn-hero {
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .action-buttons .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1 class="hero-title">Your Ultimate <span class="text-warning">Social Media</span> Command Center</h1>
+                <p class="hero-subtitle">SocialDash empowers you to manage all your social networks, schedule posts, analyze performance, and engage with your audience - all from one beautiful dashboard.</p>
+                
+                <div class="d-flex justify-content-center action-buttons gap-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-hero btn-hero-primary">
+                            <i class="fas fa-rocket me-2"></i> Launch Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="btn btn-hero btn-hero-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i> Get Started
+                        </a>
+                        <a href="{% url 'account_signup' %}" class="btn btn-hero btn-hero-outline">
+                            <i class="fas fa-user-plus me-2"></i> Create Account
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<div class="container my-5 py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card feature-card-1 p-4 p-lg-5">
+                <div class="feature-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <h3 class="feature-title text-center">Cross-Platform Publishing</h3>
+                <p class="feature-description text-center">
+                    Schedule and publish content to multiple social networks simultaneously with our intuitive posting interface.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card feature-card-2 p-4 p-lg-5">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3 class="feature-title text-center">Advanced Analytics</h3>
+                <p class="feature-description text-center">
+                    Gain deep insights with beautiful, customizable reports that show your social media performance metrics.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="feature-card feature-card-3 p-4 p-lg-5">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3 class="feature-title text-center">Unified Engagement</h3>
+                <p class="feature-description text-center">
+                    Respond to comments and messages from all your social accounts in one convenient inbox.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

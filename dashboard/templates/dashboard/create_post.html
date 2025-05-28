@@ -1,0 +1,79 @@
+{% extends "dashboard/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create New Post</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ post_form|crispy }}
+                    
+                    <div id="schedule-section">
+                        <h5 class="mt-4 mb-3"><i class="fas fa-clock me-2"></i>Schedule Post</h5>
+                        {{ schedule_form|crispy }}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fas fa-paper-plane me-2"></i> Publish Now
+                        </button>
+                        <button type="button" id="schedule-btn" class="btn btn-outline-primary px-4">
+                            <i class="fas fa-clock me-2"></i> Schedule
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scheduleSection = document.getElementById('schedule-section');
+        const scheduleBtn = document.getElementById('schedule-btn');
+        const scheduleTimeField = document.getElementById('id_scheduled_time');
+        const socialAccountsField = document.getElementById('id_social_accounts');
+        
+        // Hide schedule section initially
+        scheduleSection.style.display = 'none';
+        
+        // Toggle schedule section when schedule button is clicked
+        scheduleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (scheduleSection.style.display === 'none') {
+                scheduleSection.style.display = 'block';
+                scheduleBtn.textContent = ' Publish Now';
+                scheduleBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>' + scheduleBtn.textContent;
+                scheduleBtn.classList.remove('btn-outline-primary');
+                scheduleBtn.classList.add('btn-primary');
+            } else {
+                scheduleSection.style.display = 'none';
+                scheduleTimeField.value = '';
+                scheduleBtn.textContent = ' Schedule';
+                scheduleBtn.innerHTML = '<i class="fas fa-clock me-2"></i>' + scheduleBtn.textContent;
+                scheduleBtn.classList.remove('btn-primary');
+                scheduleBtn.classList.add('btn-outline-primary');
+            }
+        });
+        
+        // If scheduled time is already set, show the schedule section
+        if (scheduleTimeField.value) {
+            scheduleSection.style.display = 'block';
+            scheduleBtn.textContent = ' Publish Now';
+            scheduleBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>' + scheduleBtn.textContent;
+            scheduleBtn.classList.remove('btn-outline-primary');
+            scheduleBtn.classList.add('btn-primary');
+        }
+    });
+</script>
+{% endblock %}

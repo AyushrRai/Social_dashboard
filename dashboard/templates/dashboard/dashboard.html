@@ -1,0 +1,177 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="sidebar">
+            <h5 class="mb-4 fw-bold text-primary">Quick Actions</h5>
+            <a href="{% url 'create_post' %}" class="d-block sidebar-item text-decoration-none">
+                <i class="fas fa-plus-circle"></i> Create Post
+            </a>
+            <a href="{% url 'scheduled_posts' %}" class="d-block sidebar-item text-decoration-none">
+                <i class="fas fa-clock"></i> Scheduled Posts
+            </a>
+            <a href="{% url 'social_accounts' %}" class="d-block sidebar-item text-decoration-none">
+                <i class="fas fa-share-alt"></i> Social Accounts
+            </a>
+            <a href="{% url 'analytics' %}" class="d-block sidebar-item text-decoration-none">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+            
+            <hr class="my-4">
+            
+            <h5 class="mb-4 fw-bold text-primary">Connected Accounts</h5>
+            {% for account in request.user.socialaccount_set.all %}
+                <div class="d-flex align-items-center mb-3">
+                    <span class="platform-icon {{ account.provider }}-icon">
+                        <i class="fab fa-{{ account.provider }}"></i>
+                    </span>
+                    <span>{{ account.extra_data.name|default:account.uid }}</span>
+                </div>
+            {% empty %}
+                <p class="text-muted small">No accounts connected</p>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="stat-label">Total Followers</h6>
+                                <h3 class="stat-value">12.5K</h3>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-users fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="stat-label">Engagement Rate</h6>
+                                <h3 class="stat-value">8.2%</h3>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-chart-line fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fab fa-facebook-f me-2"></i> Recent Facebook Posts</span>
+                        <a href="#" class="text-white small">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if facebook_posts %}
+                            {% for post in facebook_posts %}
+                                <div class="post-card p-3 mb-3 bg-light rounded">
+                                    <p class="mb-2">{{ post.message|truncatechars:100 }}</p>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <span>{{ post.created_time }}</span>
+                                        <span>
+                                            <i class="fas fa-thumbs-up me-1"></i> {{ post.likes.summary.total_count|default:0 }}
+                                            <i class="fas fa-comment ms-2 me-1"></i> {{ post.comments.summary.total_count|default:0 }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No Facebook posts found</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="fab fa-twitter me-2"></i> Recent Tweets</span>
+                        <a href="#" class="text-white small">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if twitter_posts %}
+                            {% for post in twitter_posts %}
+                                <div class="post-card p-3 mb-3 bg-light rounded">
+                                    <p class="mb-2">{{ post.text|truncatechars:100 }}</p>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <span>{{ post.created_at }}</span>
+                                        <span>
+                                            <i class="fas fa-heart me-1"></i> {{ post.favorite_count|default:0 }}
+                                            <i class="fas fa-retweet ms-2 me-1"></i> {{ post.retweet_count|default:0 }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No Twitter posts found</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-clock me-2"></i> Upcoming Scheduled Posts
+                    </div>
+                    <div class="card-body">
+                        {% if scheduled_posts %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Content</th>
+                                            <th>Platforms</th>
+                                            <th>Scheduled Time</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for scheduled_post in scheduled_posts %}
+                                            <tr>
+                                                <td>{{ scheduled_post.post.content|truncatechars:50 }}</td>
+                                                <td>
+                                                    {% for account in scheduled_post.social_accounts.all %}
+                                                        <span class="badge bg-primary me-1">{{ account.platform }}</span>
+                                                    {% endfor %}
+                                                </td>
+                                                <td>{{ scheduled_post.post.scheduled_time }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                    <a href="#" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No scheduled posts</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
